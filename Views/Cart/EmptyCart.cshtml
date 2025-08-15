@@ -1,0 +1,15 @@
+﻿@{ 
+   ViewData["Title"] = "سبد خرید خالی";
+   Layout = "~/Views/Shared/_Layout.cshtml"; // اگر از Layout استفاده می‌کنی
+}
+
+<div class="container mt-5 text-center">
+    <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+    <h2 class="text-danger">سبد خرید شما خالی است</h2>
+    <p class="lead text-secondary">برای ادامه خرید، به صفحه محصولات مراجعه کنید.</p>
+
+    <a asp-action="AllProducts" asp-controller="Product" class="btn btn-primary mt-4">
+        مشاهده محصولات
+        <i class="fas fa-arrow-left ml-2"></i>
+    </a>
+</div>

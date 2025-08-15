@@ -1,0 +1,127 @@
+﻿@model IEnumerable<Fartak.DbModels.Product>
+
+
+<h1>
+    @if (ViewData["Message"] != null)
+    {
+        @ViewData["Message"]
+    }
+</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NameForView)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Colors)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AboutThisProduct)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PictureNumbers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr id="@item.Id">
+            <td id="@item.Id-Category">
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td id="@item.Id-NameForView">
+                @Html.DisplayFor(modelItem => item.NameForView)
+            </td>
+            <td id="@item.Id-Model">
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+            <td id="@item.Id-Colors">
+                @Html.DisplayFor(modelItem => item.Colors)
+            </td>
+            <td id="@item.Id-Price">
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td id="@item.Id-AboutThisProduct">
+                @Html.DisplayFor(modelItem => item.AboutThisProduct)
+            </td>
+            <td id="@item.Id-PictureNumbers">
+                @Html.DisplayFor(modelItem => item.PictureNumbers)
+            </td>
+            <td id="@item.Id-Number">
+                <input type="number" max="100" min="1" value="1" />
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="ShowProduct" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="RemoveFromCart" asp-route-Id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-primary" onclick="addToOrder()">افزودن به سفارشات</button>
+
+<script>
+  
+    function addToOrder() {
+        const rows = document.querySelectorAll("tr[id]"); // همه trهایی که id دارند
+        const order = [];
+
+        rows.forEach(row => {
+            const productId = row.id;
+            
+
+            const ProductName = document.getElementById(`${productId}-NameForView`);
+            const priceCell = document.getElementById(`${productId}-Price`);
+            const numberCell = document.getElementById(`${productId}-Number`);
+            const quantityInput = numberCell?.querySelector("input[type='number']");
+
+            const price = priceCell?.textContent.trim();
+            const productName = ProductName?.textContent.trim();
+            const quantity = quantityInput?.value;
+
+            order.push({
+                ProductId: productId,
+                Price: price,
+                Number: quantity,
+                ProductName : productName
+            });
+        });
+        fetch(`/Order/AddToOrders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            },
+            body: JSON.stringify(order)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("✅ سفارش شما با موفقیت ثبت شد");
+                    window.location = "/Order/MyOrders"
+                } else {
+                    alert("❌ ثبت سفارش ناموفق بود");
+                }
+            })
+            .catch(error => {
+                console.error("خطا:", error);
+                alert("⚠️ خطا در ارتباط با سرور");
+            });
+    }
+</script>

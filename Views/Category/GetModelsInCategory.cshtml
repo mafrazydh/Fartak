@@ -1,0 +1,24 @@
+﻿@using Fartak.Models.Category
+@model List<ModelsInCategory> // یا می‌توانید از یک مدل خاص استفاده کنید
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<h1>@Model.FirstOrDefault().Category</h1>
+<h2>@Model.FirstOrDefault().Name</h2>
+<table>
+    <thead>
+        <tr>
+            <th>نام دسته</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td><a asp-action="GetNamesInCategory" asp-controller="Category" asp-route-Name="@category.Model">@category.Model</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

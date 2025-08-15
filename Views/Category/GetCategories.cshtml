@@ -1,0 +1,96 @@
+﻿@model Fartak.Models.Category.GetAllCategory
+
+<h2>دسته‌ها</h2>
+
+<h3>لیست دسته‌ها</h3>
+<ul>
+</ul>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+    <thead>
+        <tr>
+            <th>دسته</th>
+            <th>نام‌ها</th>
+            <th>مدل ها</th>
+        </tr>
+    </thead>
+    @*<tbody>
+            @foreach (var category in Model.Categories)
+            {
+                // دریافت نام‌های منحصر به فرد مربوط به دسته فعلی
+                var uniqueNamesInCategory = Model.NamesCategory
+                    .Where(n => n.Category == category)
+                    .Select(n => n.Name)
+                    .Distinct()
+                    .ToList();
+
+
+                if (uniqueNamesInCategory.Count > 0)
+                {
+                    // ردیف اول برای نام دسته
+                    <tr>
+                        <td rowspan="@uniqueNamesInCategory.Count + 1"><a asp-action="SearchCategoryNameInProducts" asp-controller="Category" asp-route-category="@category">@category</a></td>
+                        <td>@uniqueNamesInCategory[0]</td>
+                    </tr>
+
+                    // ردیف‌های بعدی برای نام‌های دیگر
+                    for (int i = 1; i < uniqueNamesInCategory.Count; i++)
+                    {
+                <tr>
+                    <td><a asp-action="SearchByNameInProducts" asp-controller="Category" asp-route-name="@uniqueNamesInCategory[i]">@uniqueNamesInCategory[i]</a></td>
+                    @foreach (var z in Model.ModelsCategory)
+                    {
+                        if (z.Name == @uniqueNamesInCategory[i])
+                        {
+                            <td>
+                                <a asp-action="SearchByModelInProducts" asp-controller="Category" asp-route-model="@z.Model">@z.Model</a>
+                            </td>
+
+                        }
+                    }
+                </tr>
+                    }
+                }
+            }
+        </tbody>*@
+    <tbody>
+        @foreach (var category in Model.Categories)
+        {
+            var uniqueNamesInCategory = Model.NamesCategory
+                .Where(n => n.Category == category)
+                .Select(n => n.Name)
+                .Distinct()
+                .ToList();
+
+            if (uniqueNamesInCategory.Any())
+            {
+                for (int i = 0; i < uniqueNamesInCategory.Count; i++)
+                {
+                    <tr>
+                        @if (i == 0)
+                        {
+                            <td rowspan="@uniqueNamesInCategory.Count">
+                                <a asp-action="SearchCategoryNameInProducts" asp-controller="Category" asp-route-category="@category">@category</a>
+                            </td>
+                        }
+
+                        <td>
+                            <a asp-action="SearchByNameInProducts" asp-controller="Category" asp-route-name="@uniqueNamesInCategory[i]">
+                                @uniqueNamesInCategory[i]
+                            </a>
+                        </td>
+
+                        <td>
+                            @foreach (var z in Model.ModelsCategory.Where(m => m.Name == uniqueNamesInCategory[i]))
+                            {
+                                <a asp-action="SearchByModelInProducts" asp-controller="Category" asp-route-model="@z.Model" class="btn btn-sm btn-outline-secondary mx-1">
+                                    @z.Model
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+
+</table>
